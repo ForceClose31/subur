@@ -56,8 +56,7 @@ dependencies {
     implementation (libs.gson)
 
 //  koin
-    implementation (libs.insert.koin.koin.android)
-    implementation (libs.insert.koin.koin.androidx.viewmodel)
+    implementation(libs.insert.koin.koin.android)
 
     implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)

@@ -12,9 +12,8 @@
         android:title="@string/title_article" />
 
     <item
-        android:id="@+id/navigation_riceplantdetector"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_riceplantdetector" />
+        android:enabled="true"
+        android:title="" />
 
     <item
         android:id="@+id/navigation_community"
