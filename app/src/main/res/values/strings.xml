@@ -3,4 +3,18 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="title_article">Article</string>
+    <string name="title_community">Community</string>
+    <string name="title_riceplantdetector">Rice Plant Detect</string>
+    <string name="title_profile">Profile</string>
+    <string name="hello_rice_plan_fragment">Rice Plan</string>
+    <string name="hello_profile_fragment">Profile</string>
+    <string name="hello_homepage_fragment">Homepage</string>
+    <string name="hello_community_fragment">Community\n</string>
+    <string name="hello_article_fragment">Article</string>
 </resources>
