@@ -7,19 +7,31 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.bangkit.subur.ui.home.HomeFragment"
+        android:name="com.bangkit.subur.features.homepage.view.HomepageFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_homepage" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.bangkit.subur.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_article"
+        android:name="com.bangkit.subur.features.article.view.ArticleFragment"
+        android:label="@string/title_article"
+        tools:layout="@layout/fragment_article" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.bangkit.subur.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_community"
+        android:name="com.bangkit.subur.features.community.view.CommunityFragment"
+        android:label="@string/title_community"
+        tools:layout="@layout/fragment_community" />
+
+    <fragment
+        android:id="@+id/navigation_riceplantdetector"
+        android:name="com.bangkit.subur.features.riceplantdetector.view.RicePlantDetectorFragment"
+        android:label="@string/title_riceplantdetector"
+        tools:layout="@layout/fragment_rice_plant_detector" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.bangkit.subur.features.profile.view.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>
