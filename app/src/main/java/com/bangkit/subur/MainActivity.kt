@@ -1,6 +1,7 @@
 package com.bangkit.subur
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -24,6 +25,11 @@ class MainActivity : AppCompatActivity(){
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+        binding.fab.setOnClickListener {
+            openFragment(RicePlantDetectorFragment())
+            binding.bottomNavigation.selectedItemId = R.id.navigation_riceplantdetector
+        }
+
         binding.bottomNavigation.background = null
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when(item.itemId){

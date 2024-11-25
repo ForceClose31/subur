@@ -12,7 +12,8 @@
         android:title="@string/title_article" />
 
     <item
-        android:enabled="true"
+        android:id="@+id/navigation_riceplantdetector"
+        android:enabled="false"
         android:title="" />
 
     <item
