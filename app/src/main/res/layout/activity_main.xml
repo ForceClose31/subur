@@ -54,11 +54,12 @@
                 android:id="@+id/fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_dashboard_black_24dp"
+                android:src="@drawable/ic_riceplant"
                 android:backgroundTint="@color/green"
                 android:contentDescription="@string/title_riceplantdetector"
                 app:layout_anchor="@id/bottomAppBar"
                 app:maxImageSize="30dp"
+                app:tint="@null"
                 app:layout_behavior="com.google.android.material.floatingactionbutton.FloatingActionButton$Behavior"/>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
