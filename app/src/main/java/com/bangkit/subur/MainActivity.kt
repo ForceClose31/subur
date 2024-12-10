@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity(){
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
         binding.fab.setOnClickListener {
             openFragment(RicePlantDetectorFragment())
             binding.bottomNavigation.selectedItemId = R.id.navigation_riceplantdetector
