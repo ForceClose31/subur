@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,7 +19,17 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    defaultConfig {
+        // Other configurations...
+        val p = Properties()
+        p.load(rootProject.file("local.properties").reader())
+        val apiKey: String = p.getProperty("API_KEY")
+        // Retrieve API key, defaulting to an empty string if not found
+        buildConfigField("String", "API_KEY", apiKey)
+    }
+
     buildTypes {
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -34,6 +46,7 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
         //noinspection DataBindingWithoutKapt
         dataBinding = true
@@ -51,6 +64,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
+    implementation (libs.generativeai)
 //  retrofit
     implementation (libs.retrofit)
     implementation (libs.converter.gson)

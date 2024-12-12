@@ -1,6 +1,7 @@
 [versions]
 agp = "8.7.2"
 cardview = "1.0.0"
+generativeai = "0.9.0"
 gson = "2.10.1"
 koinAndroid = "3.2.0"
 koinAndroidVersion = "3.4.2"
@@ -24,6 +25,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationFragmentKtx" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 insert-koin-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroidVersion" }
 insert-koin-koin-androidx-viewmodel = { module = "io.insert-koin:koin-androidx-viewmodel", version.ref = "koinAndroidVersion" }
