@@ -25,6 +25,10 @@
             android:name=".features.chatbot.view.ChatBotActivity"
             android:exported="false" />
 
+        <activity android:name=".features.editprofile.view.EditProfileActivity"
+            android:exported="false" />
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

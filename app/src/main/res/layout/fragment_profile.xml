@@ -65,40 +65,79 @@
             android:textSize="16sp"
             android:layout_marginBottom="24dp"/>
 
-        <com.google.android.material.button.MaterialButton
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Edit Profil"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#4CAF50"
-            app:cornerRadius="8dp"
-            android:layout_marginBottom="16dp"/>
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/editProfileButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Edit Profil"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#4CAF50"
+                app:cornerRadius="8dp"
+                android:layout_marginEnd="8dp"/>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:icon="@drawable/ic_settings"
+                app:iconTint="#FFFFFF"
+                android:backgroundTint="#4CAF50"
+                app:cornerRadius="8dp"
+                android:layout_marginEnd="8dp"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:contentDescription="Open settings"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:icon="@drawable/ic_logout"
+                app:iconTint="#FFFFFF"
+                android:backgroundTint="#F44336"
+                app:cornerRadius="8dp"
+                style="@style/Widget.MaterialComponents.Button.Icon"
+                android:contentDescription="Log out"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="24dp"
+            app:cardElevation="0dp">
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnUnggahan"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Unggahan"
+                app:cardElevation="0dp"
                 android:textColor="#4CAF50"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:gravity="center"/>
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:rippleColor="#1A4CAF50"/>
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRiwayat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Riwayat"
+                app:cardElevation="0dp"
                 android:textColor="#AAAAAA"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:gravity="center"/>
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:rippleColor="#1AAAAAAA"/>
 
         </LinearLayout>
 
