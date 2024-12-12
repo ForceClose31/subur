@@ -233,6 +233,11 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:background="#EEEEEE"
-        android:layout_margin="16dp" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="70dp"
+        android:layout_marginEnd="16dp"
+
+        />
     </LinearLayout>
 </ScrollView>

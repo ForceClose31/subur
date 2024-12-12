@@ -17,4 +17,11 @@
     <string name="hello_homepage_fragment">Homepage</string>
     <string name="hello_community_fragment">Community\n</string>
     <string name="hello_article_fragment">Article</string>
+    <string name="article_image">Article Image</string>
+    <string name="artikel">Artikel</string>
+    <string name="cari_artikel">Cari Artikel</string>
+    <string name="beranda">Beranda</string>
+    <string name="terbaru">Terbaru</string>
+    <string name="artikel_untuk_anda">Artikel Untuk Anda</string>
+    <string name="artikel_terkini">Artikel Terkini</string>
 </resources>
