@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.bangkit.subur.R
 import com.bangkit.subur.features.chatbot.view.ChatBotActivity
+import com.bangkit.subur.features.weather.view.WeatherActivity
 
 
 class HomepageFragment : Fragment() {
@@ -19,15 +20,18 @@ class HomepageFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_homepage, container, false)
 
-        // Find the AI question service LinearLayout
         val aiQuestionService = view.findViewById<LinearLayout>(R.id.ai_question_service)
+        val weatherPredictionService = view.findViewById<LinearLayout>(R.id.weather_prediction_service)
 
-        // Set click listener to start ChatBotActivity
         aiQuestionService.setOnClickListener {
             val intent = Intent(requireContext(), ChatBotActivity::class.java)
             startActivity(intent)
         }
 
+        weatherPredictionService.setOnClickListener {
+            val intent = Intent(requireContext(), WeatherActivity::class.java)
+            startActivity(intent)
+        }
         return view
     }
 }

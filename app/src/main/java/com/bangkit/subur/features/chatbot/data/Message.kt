@@ -1,4 +1,4 @@
-package com.bangkit.subur.features.chatbot.domain
+package com.bangkit.subur.features.chatbot.data
 
 data class Message(
     val content: String,

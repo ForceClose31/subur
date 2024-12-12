@@ -1,4 +1,4 @@
-package com.bangkit.subur.features.chatbot.data
+package com.bangkit.subur.features.chatbot.domain
 
 import com.bangkit.subur.BuildConfig
 import com.google.ai.client.generativeai.GenerativeModel
@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 class GeminiApiService(private val apiKey: String) {
     private val model = GenerativeModel(
         modelName = "gemini-pro",
-        apiKey = BuildConfig.API_KEY
+        apiKey = BuildConfig.API_KEY_GEMINI
     )
 
     suspend fun generateResponse(prompt: String): String = withContext(Dispatchers.IO) {

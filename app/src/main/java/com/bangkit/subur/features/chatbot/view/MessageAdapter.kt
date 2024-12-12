@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bangkit.subur.R
-import com.bangkit.subur.features.chatbot.domain.Message
+import com.bangkit.subur.features.chatbot.data.Message
 
 class MessageAdapter : RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
     private val messages = mutableListOf<Message>()

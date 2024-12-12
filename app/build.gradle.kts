@@ -20,12 +20,15 @@ android {
     }
 
     defaultConfig {
-        // Other configurations...
+
         val p = Properties()
         p.load(rootProject.file("local.properties").reader())
-        val apiKey: String = p.getProperty("API_KEY")
-        // Retrieve API key, defaulting to an empty string if not found
-        buildConfigField("String", "API_KEY", apiKey)
+        val apiKeyGemini: String = p.getProperty("API_KEY_GEMINI")
+        val apiKeyWeather: String = p.getProperty("API_KEY_WEATHER")
+
+        buildConfigField("String", "API_KEY_GEMINI", apiKeyGemini)
+        buildConfigField("String", "API_KEY_WEATHER", apiKeyWeather)
+
     }
 
     buildTypes {
@@ -54,7 +57,8 @@ android {
 }
 
 dependencies {
-
+    implementation ("com.google.android.gms:play-services-location:21.3.0")
+    implementation ("androidx.datastore:datastore-preferences:1.1.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -74,9 +78,13 @@ dependencies {
     implementation(libs.insert.koin.koin.android)
 
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.activity)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.androidx.cardview)
+    implementation (libs.picasso)
+
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 }
