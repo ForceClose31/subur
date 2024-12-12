@@ -70,16 +70,24 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
     implementation (libs.generativeai)
-//  retrofit
+
+    //  retrofit
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
     implementation (libs.gson)
 
-//  koin
+    //  koin
     implementation(libs.insert.koin.koin.android)
+
+    // camera
+    implementation (libs.androidx.camera.core)
+    implementation (libs.androidx.camera.camera2)
+    implementation (libs.androidx.camera.lifecycle.v120)
+    implementation (libs.androidx.camera.view.v100)
 
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
+    implementation(libs.androidx.material3.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

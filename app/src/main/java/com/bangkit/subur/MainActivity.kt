@@ -49,8 +49,18 @@ class MainActivity : AppCompatActivity() {
         locationPreference = LocationPreferences(this)
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
 
-
         checkLocationPermission()
+
+        setupMainActivityUI()
+
+        val lastPage = getLastSelectedPage()
+        when(lastPage) {
+            "home" -> openFragment(HomepageFragment())
+            "article" -> openFragment(ArticleFragment())
+            "riceplantdetector" -> openFragment(RicePlantDetectorFragment())
+            "community" -> openFragment(CommunityFragment())
+            "profile" -> openFragment(ProfileFragment())
+        }
     }
 
     private fun setupMainActivityUI() {
@@ -62,16 +72,42 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.background = null
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when(item.itemId){
-                R.id.navigation_home -> openFragment(HomepageFragment())
-                R.id.navigation_article -> openFragment(ArticleFragment())
-                R.id.navigation_riceplantdetector -> openFragment(RicePlantDetectorFragment())
-                R.id.navigation_community -> openFragment(CommunityFragment())
-                R.id.navigation_profile -> openFragment(ProfileFragment())
+                R.id.navigation_home -> {
+                    saveLastSelectedPage("home")
+                    openFragment(HomepageFragment())
+                }
+                R.id.navigation_article -> {
+                    saveLastSelectedPage("article")
+                    openFragment(ArticleFragment())
+                }
+                R.id.navigation_riceplantdetector -> {
+                    saveLastSelectedPage("riceplantdetector")
+                    openFragment(RicePlantDetectorFragment())
+                }
+                R.id.navigation_community -> {
+                    saveLastSelectedPage("community")
+                    openFragment(CommunityFragment())
+                }
+                R.id.navigation_profile -> {
+                    saveLastSelectedPage("profile")
+                    openFragment(ProfileFragment())
+                }
             }
             true
         }
         fragmentManager = supportFragmentManager
-        openFragment(HomepageFragment())
+    }
+
+    private fun saveLastSelectedPage(page: String) {
+        val sharedPreferences = getSharedPreferences("appPreferences", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("lastSelectedPage", page)
+        editor.apply()
+    }
+
+    private fun getLastSelectedPage(): String? {
+        val sharedPreferences = getSharedPreferences("appPreferences", MODE_PRIVATE)
+        return sharedPreferences.getString("lastSelectedPage", "home")
     }
 
     private fun checkLocationPermission() {
@@ -91,9 +127,7 @@ class MainActivity : AppCompatActivity() {
                         LOCATION_PERMISSION_REQUEST_CODE
                     )
                 }
-                .setNegativeButton("Exit App") { _, _ ->
-                    finish()
-                }
+                .setNegativeButton("Exit App") { _, _ -> finish() }
                 .setCancelable(false)
                 .show()
         } else {
@@ -111,61 +145,14 @@ class MainActivity : AppCompatActivity() {
                 .setTitle("Location Services Disabled")
                 .setMessage("Location services are necessary for this app to function. Please enable location services.")
                 .setPositiveButton("Enable Location") { _, _ ->
-
                     val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                     startActivityForResult(intent, LOCATION_SETTINGS_REQUEST_CODE)
                 }
-                .setNegativeButton("Exit App") { _, _ ->
-                    finish()
-                }
+                .setNegativeButton("Exit App") { _, _ -> finish() }
                 .setCancelable(false)
                 .show()
         } else {
-
-            setupMainActivityUI()
             updateLocation()
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == LOCATION_SETTINGS_REQUEST_CODE) {
-
-            checkLocationServices()
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                checkLocationServices()
-            } else {
-
-                AlertDialog.Builder(this)
-                    .setTitle("Permission Denied")
-                    .setMessage("Location permission is required for this app to function. The app will now close.")
-                    .setPositiveButton("Exit") { _, _ ->
-                        finish()
-                    }
-                    .setCancelable(false)
-                    .show()
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            checkLocationServices()
         }
     }
 
@@ -188,17 +175,21 @@ class MainActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        super.onBackPressed()
-        if(binding.drawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         } else {
-            onBackPressedDispatcher.onBackPressed()
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                super.onBackPressed()
+            } else {
+                openFragment(HomepageFragment())
+            }
         }
     }
 
-    private fun openFragment(fragment: Fragment){
+    private fun openFragment(fragment: Fragment) {
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.fragment_container, fragment)
+        fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 }
