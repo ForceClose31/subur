@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services") version "4.4.2"
 }
 
 android {
@@ -86,5 +87,9 @@ dependencies {
     implementation(libs.androidx.cardview)
     implementation (libs.picasso)
 
+    implementation("com.google.firebase:firebase-auth")
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+
+
 }

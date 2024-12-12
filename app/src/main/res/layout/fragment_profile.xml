@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Profil"
-            android:textColor="#4CAF50"
+            android:textColor="@color/green"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"/>
@@ -78,7 +78,7 @@
                 android:layout_weight="1"
                 android:text="Edit Profil"
                 android:textColor="#FFFFFF"
-                android:backgroundTint="#4CAF50"
+                android:backgroundTint="@color/green"
                 app:cornerRadius="8dp"
                 android:layout_marginEnd="8dp"/>
 
@@ -88,7 +88,7 @@
                 android:layout_height="48dp"
                 app:icon="@drawable/ic_settings"
                 app:iconTint="#FFFFFF"
-                android:backgroundTint="#4CAF50"
+                android:backgroundTint="@color/green"
                 app:cornerRadius="8dp"
                 android:layout_marginEnd="8dp"
                 style="@style/Widget.MaterialComponents.Button.Icon"
@@ -120,7 +120,7 @@
                 android:layout_weight="1"
                 android:text="Unggahan"
                 app:cardElevation="0dp"
-                android:textColor="#4CAF50"
+                android:textColor="@color/green"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
