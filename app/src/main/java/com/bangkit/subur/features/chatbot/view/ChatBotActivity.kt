@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bangkit.subur.BuildConfig
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.button.MaterialButton
 import com.bangkit.subur.R
@@ -35,7 +36,7 @@ class ChatBotActivity : AppCompatActivity() {
         messageRecyclerView.adapter = messageAdapter
 
 
-        geminiApiService = GeminiApiService("YOUR_API_KEY_HERE")
+        geminiApiService = GeminiApiService(BuildConfig.API_KEY_GEMINI)
 
 
         sendButton.setOnClickListener {
