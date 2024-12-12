@@ -21,8 +21,17 @@ class ArticleViewModel(application: Application) : AndroidViewModel(application)
                 Log.d("ArticleFragment", "Response Data: $response")
                 articles.postValue(response.data)
             } catch (e: Exception) {
-                // Handle error
+                Log.e("ArticleViewModel", "Error fetching articles: ${e.message}")
             }
+        }
+    }
+
+    fun searchArticles(query: String) {
+        val filteredArticles = articles.value?.filter {
+            it.title.contains(query, ignoreCase = true)
+        }
+        filteredArticles?.let {
+            articles.postValue(it)
         }
     }
 }
