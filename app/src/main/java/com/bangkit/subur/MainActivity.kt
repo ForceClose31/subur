@@ -25,6 +25,8 @@ import com.bangkit.subur.features.riceplantdetector.view.RicePlantDetectorFragme
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.bangkit.subur.preferences.LocationPreferences
+import com.bangkit.subur.preferences.UserPreferences
+import com.bangkit.subur.features.login.view.LoginActivity
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationPreference: LocationPreferences
     private lateinit var locationManager: LocationManager
+    private lateinit var userPreferences: UserPreferences
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
@@ -48,7 +51,25 @@ class MainActivity : AppCompatActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         locationPreference = LocationPreferences(this)
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        userPreferences = UserPreferences(this)
 
+        checkUserLogin()
+    }
+
+    private fun checkUserLogin() {
+        lifecycleScope.launch {
+            userPreferences.userUid.collect { uid ->
+                if (uid.isNullOrEmpty()) {
+                    // User is not logged in, redirect to LoginActivity
+                    val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    // User is logged in, proceed with location check
+                    checkLocationPermission()
+                }
+            }
+        }
         checkLocationPermission()
 
         setupMainActivityUI()
@@ -152,7 +173,51 @@ class MainActivity : AppCompatActivity() {
                 .setCancelable(false)
                 .show()
         } else {
+
+            setupMainActivityUI()
             updateLocation()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == LOCATION_SETTINGS_REQUEST_CODE) {
+
+            checkLocationServices()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkLocationServices()
+            } else {
+
+                AlertDialog.Builder(this)
+                    .setTitle("Permission Denied")
+                    .setMessage("Location permission is required for this app to function. The app will now close.")
+                    .setPositiveButton("Exit") { _, _ ->
+                        finish()
+                    }
+                    .setCancelable(false)
+                    .show()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            checkLocationServices()
         }
     }
 

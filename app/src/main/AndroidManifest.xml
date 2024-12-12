@@ -29,6 +29,14 @@
             android:exported="false" />
 
         <activity
+            android:name=".features.login.view.LoginActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".features.register.view.RegisterActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".features.chatbot.view.ChatBotActivity"
             android:exported="false" />
 
