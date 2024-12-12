@@ -28,10 +28,11 @@ class ArticleViewModel(application: Application) : AndroidViewModel(application)
 
     fun searchArticles(query: String) {
         val filteredArticles = articles.value?.filter {
-            it.title.contains(query, ignoreCase = true)
+            it.title?.contains(query, ignoreCase = true) == true
         }
         filteredArticles?.let {
             articles.postValue(it)
         }
     }
+
 }

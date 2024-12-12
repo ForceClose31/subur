@@ -1,5 +1,6 @@
 package com.bangkit.subur.features.article.repository
 
+import android.annotation.SuppressLint
 import android.util.Log
 import com.bangkit.subur.features.article.model.ArticleResponse
 import com.bangkit.subur.features.article.network.ArticleApiService
@@ -19,6 +20,7 @@ class ArticleRepository {
         api = retrofit.create(ArticleApiService::class.java)
     }
 
+    @SuppressLint("SuspiciousIndentation")
     suspend fun getArticles(): ArticleResponse {
         Log.d("ArticleRepository", "Fetching articles...")
         try {
