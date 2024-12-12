@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,7 +19,20 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    defaultConfig {
+
+        val p = Properties()
+        p.load(rootProject.file("local.properties").reader())
+        val apiKeyGemini: String = p.getProperty("API_KEY_GEMINI")
+        val apiKeyWeather: String = p.getProperty("API_KEY_WEATHER")
+
+        buildConfigField("String", "API_KEY_GEMINI", apiKeyGemini)
+        buildConfigField("String", "API_KEY_WEATHER", apiKeyWeather)
+
+    }
+
     buildTypes {
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -34,6 +49,7 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
         //noinspection DataBindingWithoutKapt
         dataBinding = true
@@ -41,7 +57,8 @@ android {
 }
 
 dependencies {
-
+    implementation ("com.google.android.gms:play-services-location:21.3.0")
+    implementation ("androidx.datastore:datastore-preferences:1.1.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -49,7 +66,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
-
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation (libs.generativeai)
 //  retrofit
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
@@ -59,9 +78,13 @@ dependencies {
     implementation(libs.insert.koin.koin.android)
 
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.activity)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.androidx.cardview)
+    implementation (libs.picasso)
+
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
 }

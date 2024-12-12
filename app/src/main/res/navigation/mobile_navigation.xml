@@ -34,4 +34,5 @@
         android:name="com.bangkit.subur.features.profile.view.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
+
 </navigation>
