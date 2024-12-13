@@ -16,13 +16,10 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
-        // Find the button by its ID
         val editProfileButton: MaterialButton = view.findViewById(R.id.editProfileButton)
         editProfileButton.setOnClickListener {
-            // Create an intent to start EditProfileActivity
             val intent = Intent(requireContext(), EditProfileActivity::class.java)
             startActivity(intent)
         }
