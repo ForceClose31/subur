@@ -84,6 +84,7 @@
 
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/settingButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 app:icon="@drawable/ic_settings"
@@ -95,6 +96,7 @@
                 android:contentDescription="Open settings"/>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/logoutButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 app:icon="@drawable/ic_logout"

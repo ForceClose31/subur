@@ -1,23 +1,22 @@
+// RegisterActivity.kt
 package com.bangkit.subur.features.register.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import com.bangkit.subur.R
+import com.bangkit.subur.features.login.view.LoginActivity
+import com.bangkit.subur.features.register.domain.model.RegisterRequest
+import com.bangkit.subur.features.register.domain.usecase.RegisterUseCase
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
-import java.io.IOException
 import java.util.regex.Pattern
-import com.bangkit.subur.R
-import com.bangkit.subur.features.login.view.LoginActivity
 
 class RegisterActivity : AppCompatActivity() {
-
     private lateinit var nameInput: TextInputEditText
     private lateinit var nameInputLayout: TextInputLayout
     private lateinit var emailInput: TextInputEditText
@@ -26,12 +25,13 @@ class RegisterActivity : AppCompatActivity() {
     private lateinit var passwordInputLayout: TextInputLayout
     private lateinit var registerButton: MaterialButton
 
-    private val client = OkHttpClient()
-    private val baseUrl = "http://34.101.111.234:3000/"
+    private lateinit var registerViewModel: RegisterViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
+        registerViewModel = ViewModelProvider(this)[RegisterViewModel::class.java]
 
         // Initialize views
         nameInput = findViewById(R.id.name_input)
@@ -42,7 +42,19 @@ class RegisterActivity : AppCompatActivity() {
         passwordInputLayout = findViewById(R.id.password_input_layout)
         registerButton = findViewById(R.id.register_button)
 
-        // Add text change listeners for real-time validation
+        // Handle login redirection
+        val loginText: TextView = findViewById(R.id.login_text)
+        loginText.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
+
+        setupValidation()
+        observeRegistrationResult()
+    }
+
+
+    private fun setupValidation() {
         nameInput.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) validateName()
         }
@@ -58,11 +70,35 @@ class RegisterActivity : AppCompatActivity() {
                 val name = nameInput.text.toString()
                 val email = emailInput.text.toString()
                 val password = passwordInput.text.toString()
-                registerUser(name, email, password)
+                registerViewModel.register(RegisterRequest(email, password, name))
             }
         }
     }
 
+    private fun observeRegistrationResult() {
+        registerViewModel.registrationResult.observe(this) { result ->
+            result.onSuccess {
+                Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            }.onFailure { error ->
+                val errorMessage = when (error) {
+                    is RegisterUseCase.RegistrationException -> error.message
+                    else -> "Registration failed"
+                }
+
+                when {
+                    errorMessage?.contains("email address is already in use", ignoreCase = true) == true -> {
+                        emailInputLayout.error = "Email is already registered"
+                        emailInput.requestFocus()
+                    }
+                    else -> Toast.makeText(this, errorMessage ?: "Registration failed", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    // Validation methods remain the same as in the original code
     private fun validateName(): Boolean {
         val name = nameInput.text.toString().trim()
         return if (name.isEmpty()) {
@@ -130,70 +166,4 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun registerUser(name: String, email: String, password: String) {
-        val jsonObject = JSONObject().apply {
-            put("email", email)
-            put("password", password)
-            put("displayName", name)
-        }
-
-        val requestBody = jsonObject.toString().toRequestBody("application/json".toMediaType())
-
-        val request = Request.Builder()
-            .url("${baseUrl}register")
-            .post(requestBody)
-            .build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread {
-                    Toast.makeText(this@RegisterActivity, "Registration failed: ${e.message}", Toast.LENGTH_LONG).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    val responseBody = response.body?.string()
-                    runOnUiThread {
-                        try {
-                            if (response.isSuccessful) {
-                                Toast.makeText(this@RegisterActivity, "Registration successful", Toast.LENGTH_SHORT).show()
-                                // Navigate to LoginActivity
-                                val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
-                                startActivity(intent)
-                                finish() // Close the RegisterActivity
-                            } else {
-                                // Parse the error response
-                                val errorJson = JSONObject(responseBody ?: "{}")
-                                val errorMessage = when {
-                                    errorJson.has("message") -> errorJson.getString("message")
-                                    errorJson.has("error") -> {
-                                        val errorObj = errorJson.getJSONObject("error")
-                                        when {
-                                            errorObj.has("details") -> errorObj.getString("details")
-                                            errorObj.has("message") -> errorObj.getString("message")
-                                            else -> "Registration failed"
-                                        }
-                                    }
-                                    else -> "Registration failed: ${response.message}"
-                                }
-
-                                // Display the specific error message
-                                Toast.makeText(this@RegisterActivity, errorMessage, Toast.LENGTH_LONG).show()
-
-                                // Optional: Handle specific error scenarios
-                                if (errorMessage.contains("email address is already in use", ignoreCase = true)) {
-                                    emailInputLayout.error = "Email is already registered"
-                                    emailInput.requestFocus()
-                                }
-                            }
-                        } catch (e: Exception) {
-                            // Fallback error handling
-                            Toast.makeText(this@RegisterActivity, "Error processing registration response", Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
-            }
-        })
-    }
 }

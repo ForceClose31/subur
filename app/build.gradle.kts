@@ -73,6 +73,7 @@ dependencies {
     implementation (libs.generativeai)
 
     //  retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.11.0")
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
     implementation (libs.gson)
@@ -108,5 +109,9 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.5.2")
 
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4" )
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
 }
