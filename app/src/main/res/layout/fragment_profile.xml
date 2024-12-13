@@ -142,10 +142,10 @@
         </LinearLayout>
 
         <!-- Placeholder for content -->
-        <View
+        <FrameLayout
+            android:id="@+id/contentContainer"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="#E0E0E0"/>
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
