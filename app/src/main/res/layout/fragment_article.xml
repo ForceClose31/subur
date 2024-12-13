@@ -104,7 +104,6 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_marginBottom="80dp"
-                        android:paddingBottom="80dp"
                         tools:listitem="@layout/item_article" />
                 </LinearLayout>
             </ScrollView>

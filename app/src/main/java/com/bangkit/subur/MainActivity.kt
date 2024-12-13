@@ -18,7 +18,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
 import com.bangkit.subur.databinding.ActivityMainBinding
 import com.bangkit.subur.features.article.view.ArticleFragment
-import com.bangkit.subur.features.community.view.CommunityFragment
+import com.bangkit.subur.features.chatbot.view.ChatBotActivity
 import com.bangkit.subur.features.homepage.view.HomepageFragment
 import com.bangkit.subur.features.login.view.LoginActivity
 import com.bangkit.subur.features.profile.view.ProfileFragment
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                         "home" -> openFragment(HomepageFragment())
                         "article" -> openFragment(ArticleFragment())
                         "riceplantdetector" -> openFragment(RicePlantDetectorFragment())
-                        "community" -> openFragment(CommunityFragment())
+                        "community" -> startActivity(Intent(this@MainActivity, ChatBotActivity::class.java))
                         "profile" -> openFragment(ProfileFragment())
                         else -> openFragment(HomepageFragment())
                     }
@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_community -> {
                     saveLastSelectedPage("community")
-                    openFragment(CommunityFragment())
+                    startActivity(Intent(this, ChatBotActivity::class.java))
                 }
                 R.id.navigation_profile -> {
                     saveLastSelectedPage("profile")
