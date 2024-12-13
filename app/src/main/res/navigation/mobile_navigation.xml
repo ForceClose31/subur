@@ -35,4 +35,9 @@
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
 
+    <fragment
+        android:id="@+id/predictionProductionFragment"
+        android:name="com.bangkit.subur.features.harvestprediction.view.HarvestPredictionFragment"
+        android:label="Prediction Production" />
+
 </navigation>

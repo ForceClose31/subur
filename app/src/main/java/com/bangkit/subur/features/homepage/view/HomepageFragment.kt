@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.bangkit.subur.R
 import com.bangkit.subur.features.chatbot.view.ChatBotActivity
+import com.bangkit.subur.features.harvestprediction.view.HarvestPredictionActivity
 import com.bangkit.subur.features.weather.view.WeatherActivity
 
 
@@ -22,9 +23,15 @@ class HomepageFragment : Fragment() {
 
         val aiQuestionService = view.findViewById<LinearLayout>(R.id.ai_question_service)
         val weatherPredictionService = view.findViewById<LinearLayout>(R.id.weather_prediction_service)
+        val harvestPredictionService = view.findViewById<LinearLayout>(R.id.production_prediction_service)
 
         aiQuestionService.setOnClickListener {
             val intent = Intent(requireContext(), ChatBotActivity::class.java)
+            startActivity(intent)
+        }
+
+        harvestPredictionService.setOnClickListener {
+            val intent = Intent(requireContext(), HarvestPredictionActivity::class.java)
             startActivity(intent)
         }
 
