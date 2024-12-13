@@ -69,9 +69,9 @@ class ArticleFragment : Fragment() {
         viewModel.articles.observe(viewLifecycleOwner) { articles ->
             if (articles.isNotEmpty()) {
                 Log.d("ArticleFragment", "Articles loaded: $articles")
-                horizontalAdapter.submitList(articles.take(5))
+                horizontalAdapter.submitList(articles)
                 verticalAdapter.submitList(articles)
-                latestAdapter.submitList(articles.take(5))
+                latestAdapter.submitList(articles)
             } else {
                 Log.d("ArticleFragment", "No articles available")
             }

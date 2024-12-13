@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bangkit.subur.databinding.ItemArticleBinding
 import com.bangkit.subur.features.article.model.Article
+import com.bumptech.glide.Glide
 
 class ArticleAdapter(private val onItemClick: (Article) -> Unit) :
     RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder>() {
@@ -35,6 +36,9 @@ class ArticleAdapter(private val onItemClick: (Article) -> Unit) :
         fun bind(article: Article) {
             binding.tvTitle.text = article.title
             binding.tvDescription.text = article.short_description
+            Glide.with(binding.root.context)
+                .load(article.image_url)
+                .into(binding.ivArticleImage)
             binding.root.setOnClickListener { onItemClick(article) }
         }
     }

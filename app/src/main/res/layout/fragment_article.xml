@@ -103,6 +103,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
+                        android:layout_marginBottom="80dp"
+                        android:paddingBottom="80dp"
                         tools:listitem="@layout/item_article" />
                 </LinearLayout>
             </ScrollView>
@@ -128,6 +130,7 @@
                         android:id="@+id/rvLatestArticles"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="80dp"
                         tools:listitem="@layout/item_article" />
                 </LinearLayout>
             </ScrollView>
