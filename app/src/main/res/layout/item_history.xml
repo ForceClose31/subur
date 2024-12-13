@@ -1,45 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/imageViewHistory"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="History Image"
+        android:scaleType="centerCrop"
+        android:background="@drawable/ic_camera" />
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <!-- Image -->
-        <ImageView
-            android:id="@+id/historyImage"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:src="@drawable/ic_camera"
-            android:scaleType="centerCrop"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Title -->
         <TextView
-            android:id="@+id/historyTitle"
+            android:id="@+id/textPredictedClass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="History Item Title"
-            android:textSize="18sp"
+            android:text="Class"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#333333"
-            android:layout_marginBottom="4dp"/>
+            android:paddingBottom="4dp" />
 
-        <!-- Description -->
         <TextView
-            android:id="@+id/historyDescription"
+            android:id="@+id/textConfidence"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description of the history item goes here."
+            android:text="Confidence"
             android:textSize="14sp"
-            android:textColor="#666666"/>
+            android:paddingBottom="4dp" />
+
+        <TextView
+            android:id="@+id/textHandlingInstructions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Instructions"
+            android:textSize="14sp" />
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</LinearLayout>

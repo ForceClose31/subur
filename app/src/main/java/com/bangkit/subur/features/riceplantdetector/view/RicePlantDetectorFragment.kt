@@ -12,9 +12,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.ViewModelProvider
 import com.bangkit.subur.R
+import com.bangkit.subur.features.profile.data.AppDatabase
+import com.bangkit.subur.features.profile.data.DetectionHistory
+import com.bangkit.subur.features.profile.viewmodel.HistoryViewModel
+import com.bangkit.subur.features.profile.viewmodel.HistoryViewModelFactory
 import com.bangkit.subur.features.riceplantdetector.viewmodel.RicePlantDetectorViewModel
 import androidx.fragment.app.viewModels
+import com.bangkit.subur.features.profile.domain.HistoryRepository
 
 class RicePlantDetectorFragment : Fragment(R.layout.fragment_rice_plant_detector) {
 
@@ -22,6 +29,8 @@ class RicePlantDetectorFragment : Fragment(R.layout.fragment_rice_plant_detector
     private lateinit var btnSelectFromGallery: Button
     private lateinit var imageView: ImageView
     private lateinit var textViewMessage: TextView
+    private lateinit var historyViewModel: HistoryViewModel
+
     private val ricePlantDetectorViewModel: RicePlantDetectorViewModel by viewModels()
 
     private val takePhotoResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -44,6 +53,12 @@ class RicePlantDetectorFragment : Fragment(R.layout.fragment_rice_plant_detector
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val database = AppDatabase.getInstance(requireContext())
+        val repository = HistoryRepository(database.detectionHistoryDao())
+
+        val factory = HistoryViewModelFactory(repository)
+        historyViewModel = ViewModelProvider(this, factory)[HistoryViewModel::class.java]
+
         btnTakePhoto = view.findViewById(R.id.btnTakePhoto)
         btnSelectFromGallery = view.findViewById(R.id.btnSelectFromGallery)
         imageView = view.findViewById(R.id.imageView)
@@ -60,7 +75,22 @@ class RicePlantDetectorFragment : Fragment(R.layout.fragment_rice_plant_detector
 
         ricePlantDetectorViewModel.result.observe(viewLifecycleOwner) { result ->
             textViewMessage.text = "Predicted Class: ${result.predicted_class}\nConfidence: ${result.confidence}\nHandling Instruction: ${result.handling_instructions}"
+            val historyItem = DetectionHistory(
+                imageUri = saveImageToInternalStorage(),
+                confidence = result.confidence,
+                handlingInstructions = result.handling_instructions,
+                predictedClass = result.predicted_class
+            )
+            historyViewModel.insertHistory(historyItem)
         }
+    }
+
+    private fun saveImageToInternalStorage(): String {
+        val filename = "rice_plant_${System.currentTimeMillis()}.png"
+        val outputStream = requireContext().openFileOutput(filename, Activity.MODE_PRIVATE)
+        imageView.drawable.toBitmap().compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        outputStream.close()
+        return requireContext().filesDir.absolutePath + "/" + filename
     }
 
     private fun updateUI(bitmap: Bitmap) {
