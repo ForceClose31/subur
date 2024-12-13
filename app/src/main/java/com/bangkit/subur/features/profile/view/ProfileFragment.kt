@@ -18,7 +18,6 @@ import com.bangkit.subur.R
 import com.bangkit.subur.features.editprofile.view.EditProfileActivity
 import com.bangkit.subur.preferences.UserPreferences
 import com.bangkit.subur.features.profile.data.AppDatabase
-import com.bangkit.subur.features.profile.data.DetectionHistory
 import com.bangkit.subur.features.profile.domain.HistoryRepository
 import com.bangkit.subur.features.profile.viewmodel.HistoryViewModel
 import com.bangkit.subur.features.profile.viewmodel.HistoryViewModelFactory
