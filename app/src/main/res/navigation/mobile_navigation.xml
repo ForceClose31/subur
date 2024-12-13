@@ -18,13 +18,6 @@
         tools:layout="@layout/fragment_article" />
 
     <fragment
-        android:id="@+id/navigation_community"
-        android:name="com.bangkit.subur.features.community.view.CommunityFragment"
-        android:label="@string/title_community"
-        tools:layout="@layout/fragment_community" />
-
-
-    <fragment
         android:id="@+id/navigation_profile"
         android:name="com.bangkit.subur.features.profile.view.ProfileFragment"
         android:label="@string/title_profile"

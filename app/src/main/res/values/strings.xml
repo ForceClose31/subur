@@ -33,5 +33,7 @@
     <string name="tambah_topik_baru">Tambah Topik Baru</string>
     <string name="topik_populer">Topik Populer</string>
     <string name="topik_trending">Topik Trending</string>
+
+    <string name="bot">Tanya AI</string>
     <string name="topik_terkini">topik terkini\n</string>
 </resources>

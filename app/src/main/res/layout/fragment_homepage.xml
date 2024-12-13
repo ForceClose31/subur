@@ -169,66 +169,15 @@
                     android:gravity="center">
 
                     <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/rice_detect_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawableEnd="@drawable/ic_scan"
                         android:gravity="center"
                         android:background="@android:color/transparent"/>
                 </LinearLayout>
-
-
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Artikel Terkini"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lihat Semua"
-        android:textColor="#4CAF50"
-        android:layout_gravity="end"
-        android:layout_marginEnd="16dp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="#EEEEEE"
-        android:layout_margin="16dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Diskusi Komunitas"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lihat Semua"
-        android:textColor="#4CAF50"
-        android:layout_gravity="end"
-        android:layout_marginEnd="16dp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="#EEEEEE"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="70dp"
-        android:layout_marginEnd="16dp"
-
-        />
     </LinearLayout>
 </ScrollView>
