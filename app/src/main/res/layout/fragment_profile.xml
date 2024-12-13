@@ -116,19 +116,6 @@
             app:cardElevation="0dp">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnUnggahan"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Unggahan"
-                app:cardElevation="0dp"
-                android:textColor="@color/green"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                app:rippleColor="#1A4CAF50"/>
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRiwayat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

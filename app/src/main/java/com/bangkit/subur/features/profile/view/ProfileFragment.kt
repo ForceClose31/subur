@@ -26,7 +26,6 @@ import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
 
-    private lateinit var btnUnggahan: MaterialButton
     private lateinit var btnRiwayat: MaterialButton
     private lateinit var contentContainer: FrameLayout
     private lateinit var historyViewModel: HistoryViewModel
@@ -42,7 +41,6 @@ class ProfileFragment : Fragment() {
         val factory = HistoryViewModelFactory(repository)
         historyViewModel = ViewModelProvider(this, factory)[HistoryViewModel::class.java]
 
-        btnUnggahan = view.findViewById(R.id.btnUnggahan)
         btnRiwayat = view.findViewById(R.id.btnRiwayat)
         contentContainer = view.findViewById(R.id.contentContainer)
 
@@ -51,21 +49,14 @@ class ProfileFragment : Fragment() {
             val intent = Intent(requireContext(), EditProfileActivity::class.java)
             startActivity(intent)
         }
-        
-        btnUnggahan.setOnClickListener { showUnggahanContent() }
+
         btnRiwayat.setOnClickListener { showRiwayatContent() }
 
 
-        btnUnggahan.setOnClickListener {
-            showUnggahanContent()
-        }
 
         btnRiwayat.setOnClickListener {
             showRiwayatContent()
         }
-
-        // Show Unggahan content by default
-        showUnggahanContent()
 
         val logoutButton: MaterialButton = view.findViewById(R.id.logoutButton)
         logoutButton.setOnClickListener {
@@ -75,21 +66,12 @@ class ProfileFragment : Fragment() {
         return view
     }
 
-    private fun showUnggahanContent() {
-        val unggahanContent = layoutInflater.inflate(R.layout.content_unggahan, contentContainer, false)
-        contentContainer.removeAllViews()
-        contentContainer.addView(unggahanContent)
-
-        btnUnggahan.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
-        btnRiwayat.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
-    }
 
     private fun showRiwayatContent() {
         val riwayatContent = layoutInflater.inflate(R.layout.content_riwayat, contentContainer, false)
         contentContainer.removeAllViews()
         contentContainer.addView(riwayatContent)
 
-        btnUnggahan.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
         btnRiwayat.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
 
         val recyclerView = riwayatContent.findViewById<RecyclerView>(R.id.recyclerViewRiwayat)
