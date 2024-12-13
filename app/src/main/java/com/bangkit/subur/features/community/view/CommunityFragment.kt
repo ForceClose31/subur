@@ -1,60 +1,63 @@
-package com.bangkit.subur.features.community.view
-
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.Button
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bangkit.subur.R
+import com.bangkit.subur.features.community.data.model.Topic
+import com.bangkit.subur.features.community.viewmodel.CommunityViewModel
+import com.bangkit.subur.features.community.viewmodel.CommunityViewModelFactory
+import com.google.firebase.auth.FirebaseAuth
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class CommunityFragment : Fragment(R.layout.fragment_community) {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CommunityFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class CommunityFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var postTopicEditText: EditText
+    private lateinit var postTopicButton: Button
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var communityViewModel: CommunityViewModel
+    private val firebaseAuth = FirebaseAuth.getInstance()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private val topics = mutableListOf<Topic>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_community, container, false)
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CommunityFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CommunityFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        postTopicEditText = view.findViewById(R.id.postTopicEditText)
+        postTopicButton = view.findViewById(R.id.postTopicButton)
+        recyclerView = view.findViewById(R.id.recyclerView)
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = CommunityAdapter(topics)
+        recyclerView.adapter = adapter
+
+        val factory = CommunityViewModelFactory(CommunityRepository(CommunityApiService.create()))
+        communityViewModel = ViewModelProvider(this, factory).get(CommunityViewModel::class.java)
+
+        postTopicButton.setOnClickListener {
+            val topic = postTopicEditText.text.toString()
+            if (topic.isNotEmpty()) {
+                val user = firebaseAuth.currentUser
+                val token = user?.getIdToken(true)?.result?.token ?: ""
+                user?.let {
+                    communityViewModel.postTopic(it.uid, topic, token)
                 }
             }
+        }
+
+        communityViewModel.topicResponse.observe(viewLifecycleOwner) { response ->
+            if (response.isSuccessful) {
+                val topicResponse = response.body()
+                topicResponse?.data?.id?.let { Toast.makeText(context, "Topic posted", Toast.LENGTH_SHORT).show() }
+            } else {
+                Toast.makeText(context, "Failed to post topic", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

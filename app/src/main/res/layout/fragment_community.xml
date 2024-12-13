@@ -1,24 +1,27 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/edtTopic"
+        android:id="@+id/postTopicEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Post a new topic"/>
+        android:hint="What's on your mind?"
+        android:padding="16dp"/>
 
     <Button
-        android:id="@+id/btnPostTopic"
-        android:layout_width="wrap_content"
+        android:id="@+id/postTopicButton"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Post Topic"/>
+        android:text="Post Topic"
+        android:padding="16dp"/>
 
-    <RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:padding="16dp"/>
+
 </LinearLayout>
