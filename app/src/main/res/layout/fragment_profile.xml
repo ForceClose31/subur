@@ -108,8 +108,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Riwayat"
+                android:backgroundTint="@color/green"
                 app:cardElevation="0dp"
-                android:textColor="#AAAAAA"
+                android:textColor="#FFF"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -117,10 +118,19 @@
 
         </LinearLayout>
 
-        <!-- Placeholder for content -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:indeterminate="true"
+            android:layout_marginTop="16dp"/>
+
         <FrameLayout
             android:id="@+id/contentContainer"
             android:layout_width="match_parent"
+            android:layout_marginBottom="60dp"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>

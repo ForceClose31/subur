@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bangkit.subur.MainActivity
@@ -28,6 +29,7 @@ class ProfileFragment : Fragment() {
 
     private lateinit var btnRiwayat: MaterialButton
     private lateinit var contentContainer: FrameLayout
+    private lateinit var progressBar: ProgressBar
     private lateinit var historyViewModel: HistoryViewModel
 
     override fun onCreateView(
@@ -43,6 +45,7 @@ class ProfileFragment : Fragment() {
 
         btnRiwayat = view.findViewById(R.id.btnRiwayat)
         contentContainer = view.findViewById(R.id.contentContainer)
+        progressBar = view.findViewById(R.id.progressBar)
 
         val editProfileButton: MaterialButton = view.findViewById(R.id.editProfileButton)
         editProfileButton.setOnClickListener {
@@ -68,6 +71,7 @@ class ProfileFragment : Fragment() {
 
 
     private fun showRiwayatContent() {
+        progressBar.visibility = View.VISIBLE
         val riwayatContent = layoutInflater.inflate(R.layout.content_riwayat, contentContainer, false)
         contentContainer.removeAllViews()
         contentContainer.addView(riwayatContent)
@@ -80,6 +84,7 @@ class ProfileFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         historyViewModel.allHistory.observe(viewLifecycleOwner) { historyList ->
+            progressBar.visibility = View.GONE
             adapter.submitList(historyList)
         }
     }
