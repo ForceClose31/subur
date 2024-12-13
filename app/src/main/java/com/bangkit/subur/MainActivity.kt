@@ -21,12 +21,12 @@ import com.bangkit.subur.features.article.view.ArticleFragment
 import com.bangkit.subur.features.community.view.CommunityFragment
 import com.bangkit.subur.features.homepage.view.HomepageFragment
 import com.bangkit.subur.features.profile.view.ProfileFragment
+import com.bangkit.subur.features.riceplantdetector.view.RicePlantDetectorFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.bangkit.subur.preferences.LocationPreferences
 import com.bangkit.subur.preferences.UserPreferences
 import com.bangkit.subur.features.login.view.LoginActivity
-import com.bangkit.subur.features.riceplantdetector.view.RicePlantDetectorActivity
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         when(lastPage) {
             "home" -> openFragment(HomepageFragment())
             "article" -> openFragment(ArticleFragment())
+            "riceplantdetector" -> openFragment(RicePlantDetectorFragment())
             "community" -> openFragment(CommunityFragment())
             "profile" -> openFragment(ProfileFragment())
         }
@@ -85,8 +86,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupMainActivityUI() {
         binding.fab.setOnClickListener {
-            val intent = Intent(this, RicePlantDetectorActivity::class.java)
-            startActivity(intent)
+            openFragment(RicePlantDetectorFragment())
+            binding.bottomNavigation.selectedItemId = R.id.navigation_riceplantdetector
         }
 
         binding.bottomNavigation.background = null
@@ -102,8 +103,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_riceplantdetector -> {
                     saveLastSelectedPage("riceplantdetector")
-                    val intent = Intent(this, RicePlantDetectorActivity::class.java)
-                    startActivity(intent)
+                    openFragment(RicePlantDetectorFragment())
                 }
                 R.id.navigation_community -> {
                     saveLastSelectedPage("community")
@@ -118,7 +118,6 @@ class MainActivity : AppCompatActivity() {
         }
         fragmentManager = supportFragmentManager
     }
-
 
     private fun saveLastSelectedPage(page: String) {
         val sharedPreferences = getSharedPreferences("appPreferences", MODE_PRIVATE)
@@ -241,13 +240,17 @@ class MainActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+        super.onBackPressed()
         if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         } else {
-            if (supportFragmentManager.backStackEntryCount > 0) {
-                super.onBackPressed()
+            // Check if there are fragments in the back stack
+            if (supportFragmentManager.backStackEntryCount > 1) {
+                // If there are multiple fragments, pop the top fragment
+                supportFragmentManager.popBackStack()
             } else {
-                openFragment(HomepageFragment())
+                // If it's the last fragment, exit the app
+                finish()
             }
         }
     }

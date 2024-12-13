@@ -10,19 +10,19 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bangkit.subur.R
 import com.bangkit.subur.features.riceplantdetector.viewmodel.RicePlantDetectorViewModel
+import androidx.fragment.app.viewModels
 
-class RicePlantDetectorActivity : AppCompatActivity() {
+class RicePlantDetectorFragment : Fragment(R.layout.fragment_rice_plant_detector) {
 
     private lateinit var btnTakePhoto: Button
     private lateinit var btnSelectFromGallery: Button
     private lateinit var imageView: ImageView
     private lateinit var textViewMessage: TextView
-    private lateinit var ricePlantDetectorViewModel: RicePlantDetectorViewModel
+    private val ricePlantDetectorViewModel: RicePlantDetectorViewModel by viewModels()
 
     private val takePhotoResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -34,23 +34,20 @@ class RicePlantDetectorActivity : AppCompatActivity() {
 
     private val selectFromGalleryResult = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
-            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, it)
+            val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, it)
             updateUI(bitmap)
             ricePlantDetectorViewModel.uploadImage(bitmap)
         }
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_rice_plant_detector)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        btnTakePhoto = findViewById(R.id.btnTakePhoto)
-        btnSelectFromGallery = findViewById(R.id.btnSelectFromGallery)
-        imageView = findViewById(R.id.imageView)
-        textViewMessage = findViewById(R.id.textViewMessage)
-
-        ricePlantDetectorViewModel = ViewModelProvider(this).get(RicePlantDetectorViewModel::class.java)
+        btnTakePhoto = view.findViewById(R.id.btnTakePhoto)
+        btnSelectFromGallery = view.findViewById(R.id.btnSelectFromGallery)
+        imageView = view.findViewById(R.id.imageView)
+        textViewMessage = view.findViewById(R.id.textViewMessage)
 
         btnTakePhoto.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -61,7 +58,7 @@ class RicePlantDetectorActivity : AppCompatActivity() {
             selectFromGalleryResult.launch("image/*")
         }
 
-        ricePlantDetectorViewModel.result.observe(this) { result ->
+        ricePlantDetectorViewModel.result.observe(viewLifecycleOwner) { result ->
             textViewMessage.text = "Predicted Class: ${result.predicted_class}\nConfidence: ${result.confidence}\nHandling Instruction: ${result.handling_instructions}"
         }
     }

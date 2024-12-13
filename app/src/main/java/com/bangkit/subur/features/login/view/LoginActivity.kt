@@ -129,10 +129,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupEmailLoginNavigation() {
-        binding.emailLinkLoginButton.setOnClickListener {
-            val intent = Intent(this, EmailLinkAuthActivity::class.java)
-            startActivity(intent)
-        }
+
     }
 
     private fun setupForgotPassword() {
