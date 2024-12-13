@@ -20,13 +20,13 @@ import com.bangkit.subur.databinding.ActivityMainBinding
 import com.bangkit.subur.features.article.view.ArticleFragment
 import com.bangkit.subur.features.community.view.CommunityFragment
 import com.bangkit.subur.features.homepage.view.HomepageFragment
+import com.bangkit.subur.features.login.view.LoginActivity
 import com.bangkit.subur.features.profile.view.ProfileFragment
 import com.bangkit.subur.features.riceplantdetector.view.RicePlantDetectorFragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.bangkit.subur.preferences.LocationPreferences
 import com.bangkit.subur.preferences.UserPreferences
-import com.bangkit.subur.features.login.view.LoginActivity
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -58,29 +58,32 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkUserLogin() {
         lifecycleScope.launch {
-            userPreferences.userUid.collect { uid ->
-                if (uid.isNullOrEmpty()) {
-                    // User is not logged in, redirect to LoginActivity
-                    val intent = Intent(this@MainActivity, LoginActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    // User is logged in, proceed with location check
+            userPreferences.isLoggedIn().collect { isLoggedIn ->
+                if (isLoggedIn) {
                     checkLocationPermission()
+
+                    setupMainActivityUI()
+                    checkLocationPermission()
+                    checkLocationPermission()
+                    setupMainActivityUI()
+
+                    val lastPage = getLastSelectedPage()
+                    when (lastPage) {
+                        "home" -> openFragment(HomepageFragment())
+                        "article" -> openFragment(ArticleFragment())
+                        "riceplantdetector" -> openFragment(RicePlantDetectorFragment())
+                        "community" -> openFragment(CommunityFragment())
+                        "profile" -> openFragment(ProfileFragment())
+                        else -> openFragment(HomepageFragment())
+                    }
+
+
+                } else {
+
+                    startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                    finish()
                 }
             }
-        }
-        checkLocationPermission()
-
-        setupMainActivityUI()
-
-        val lastPage = getLastSelectedPage()
-        when(lastPage) {
-            "home" -> openFragment(HomepageFragment())
-            "article" -> openFragment(ArticleFragment())
-            "riceplantdetector" -> openFragment(RicePlantDetectorFragment())
-            "community" -> openFragment(CommunityFragment())
-            "profile" -> openFragment(ProfileFragment())
         }
     }
 

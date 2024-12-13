@@ -2,45 +2,64 @@ package com.bangkit.subur.features.login.view
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import com.bangkit.subur.features.login.data.LoginState
 import com.bangkit.subur.preferences.UserPreferences
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
+import retrofit2.http.POST
 
-class LoginViewModel(
-    private val auth: FirebaseAuth,
-    private val userPreferences: UserPreferences
-) : ViewModel() {
+class LoginViewModel(private val userPreferences: UserPreferences) : ViewModel() {
 
-    private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
-    val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
+    private val apiService = Retrofit.Builder()
+        .baseUrl("http://34.101.111.234:3000/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(ApiService::class.java)
 
-    fun login(email: String, password: String) {
+    fun login(email: String, password: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
-            _loginState.value = LoginState.Loading
             try {
-                val result = auth.signInWithEmailAndPassword(email, password).await()
-                result.user?.let { user ->
-                    userPreferences.saveUserUid(user.uid)
-                    _loginState.value = LoginState.Success(user.uid)
-                } ?: run {
-                    _loginState.value = LoginState.Error.UnknownError("Login failed: User is null")
+                val response = apiService.login(LoginRequest(email, password))
+                if (response.status == "success") {
+                    userPreferences.saveUserData(
+                        email = response.data.biodata.email,
+                        uid = response.data.biodata.uid,
+                        token = response.data.token
+                    )
+                    onSuccess()
+                } else {
+                    onError("Login failed: ${response.message}")
                 }
             } catch (e: Exception) {
-                _loginState.value = LoginState.Error.fromException(e)
+                onError("Error: ${e.message}")
             }
         }
     }
-
-    fun logout() {
-        viewModelScope.launch {
-            auth.signOut()
-            userPreferences.clearUserUid()
-            _loginState.value = LoginState.Idle
-        }
-    }
 }
+
+interface ApiService {
+    @POST("login")
+    suspend fun login(@Body loginRequest: LoginRequest): LoginResponse
+}
+
+data class LoginRequest(
+    val email: String,
+    val password: String
+)
+
+data class LoginResponse(
+    val status: String,
+    val message: String,
+    val data: LoginData
+)
+
+data class LoginData(
+    val token: String,
+    val biodata: Biodata
+)
+
+data class Biodata(
+    val uid: String,
+    val email: String
+)

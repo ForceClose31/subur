@@ -47,9 +47,6 @@
         <activity android:name=".features.editprofile.view.EditProfileActivity"
             android:exported="false" />
 
-        <activity android:name=".features.riceplantdetector.view.RicePlantDetectorActivity"
-            android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -4,140 +4,48 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.launch
-
-import com.bangkit.subur.preferences.UserPreferences
-import com.bangkit.subur.features.login.data.LoginState
-import com.bangkit.subur.features.register.view.RegisterActivity
 import com.bangkit.subur.MainActivity
 import com.bangkit.subur.databinding.ActivityLoginBinding
-import com.bangkit.subur.features.emaillogin.EmailLinkAuthActivity
+import com.bangkit.subur.features.login.view.LoginViewModel
+import com.bangkit.subur.preferences.UserPreferences
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var viewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val auth = FirebaseAuth.getInstance()
         val userPreferences = UserPreferences(this)
-        loginViewModel = LoginViewModel(auth, userPreferences)
+        viewModel = LoginViewModel(userPreferences)
 
-        setupInputValidation()
-        setupLoginButton()
-        observeLoginState()
-        setupSignupNavigation()
-        setupEmailLoginNavigation()
-        setupForgotPassword()
-    }
-
-    private fun setupInputValidation() {
-        // Real-time validation on focus change
-        binding.emailInput.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) validateEmail()
-        }
-
-        binding.passwordInput.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) validatePassword()
-        }
-    }
-
-    private fun validateEmail(): Boolean {
-        val email = binding.emailInput.text.toString().trim()
-        return when {
-            email.isEmpty() -> {
-                binding.emailInputLayout.error = "Email cannot be empty"
-                false
-            }
-            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                binding.emailInputLayout.error = "Invalid email format"
-                false
-            }
-            else -> {
-                binding.emailInputLayout.error = null
-                true
-            }
-        }
-    }
-
-    private fun validatePassword(): Boolean {
-        val password = binding.passwordInput.text.toString().trim()
-        return when {
-            password.isEmpty() -> {
-                binding.passwordInputLayout.error = "Password cannot be empty"
-                false
-            }
-            password.length < 6 -> {
-                binding.passwordInputLayout.error = "Password must be at least 6 characters"
-                false
-            }
-            else -> {
-                binding.passwordInputLayout.error = null
-                true
-            }
-        }
-    }
-
-    private fun setupLoginButton() {
         binding.loginButton.setOnClickListener {
-            val email = binding.emailInput.text.toString().trim()
-            val password = binding.passwordInput.text.toString().trim()
+            val email = binding.emailInput.text.toString()
+            val password = binding.passwordInput.text.toString()
 
-            // Perform full validation before login
-            if (validateEmail() && validatePassword()) {
-                loginViewModel.login(email, password)
-            }
-        }
-    }
-
-    private fun observeLoginState() {
-        lifecycleScope.launch {
-            loginViewModel.loginState.collect { state ->
-                when (state) {
-                    is LoginState.Loading -> {
-                        binding.loginButton.isEnabled = false
-                        // Show loading indicator
-                    }
-                    is LoginState.Success -> {
-                        // Navigate to main activity
-                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                        startActivity(intent)
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                viewModel.login(
+                    email,
+                    password,
+                    onSuccess = {
+                        // Navigate to main activity or dashboard
+                        startActivity(Intent(this, MainActivity::class.java))
                         finish()
+                    },
+                    onError = { errorMessage ->
+                        // Show error message
+                        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
                     }
-                    is LoginState.Error -> {
-                        binding.loginButton.isEnabled = true
-                        Toast.makeText(this@LoginActivity, state.message, Toast.LENGTH_SHORT).show()
-                    }
-                    is LoginState.Idle -> {
-                        binding.loginButton.isEnabled = true
-                    }
-                }
+                )
+            } else {
+                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private fun setupSignupNavigation() {
-        binding.signupText.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
-    private fun setupEmailLoginNavigation() {
-
-    }
-
-    private fun setupForgotPassword() {
-        //  binding.forgotPassword.setOnClickListener {
-        //      val intent = Intent(this, ForgotPasswordActivity::class.java)
-        //      startActivity(intent)
-        //  }
-
-
     }
 }
