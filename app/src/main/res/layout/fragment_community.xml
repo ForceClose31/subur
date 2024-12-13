@@ -100,8 +100,7 @@
                         android:id="@+id/rvPopularTopics"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        tools:listitem="@layout/item_topic" />
+                        android:orientation="vertical" />
                 </LinearLayout>
             </ScrollView>
 
@@ -127,8 +126,7 @@
                         android:id="@+id/rvLatestTopics"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        tools:listitem="@layout/item_topic" />
+                        android:orientation="vertical" />
                 </LinearLayout>
             </ScrollView>
         </ViewSwitcher>

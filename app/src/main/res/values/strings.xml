@@ -28,4 +28,10 @@
     <string name="take_photo">Take Photo</string>
     <string name="select_from_gallery">Select from Gallery</string>
     <string name="predict">Predict :</string>
+    <string name="komunitas">Komunitas</string>
+    <string name="cari_topik">Cari Topik</string>
+    <string name="tambah_topik_baru">Tambah Topik Baru</string>
+    <string name="topik_populer">Topik Populer</string>
+    <string name="topik_trending">Topik Trending</string>
+    <string name="topik_terkini">topik terkini\n</string>
 </resources>
