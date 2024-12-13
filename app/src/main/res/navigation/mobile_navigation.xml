@@ -23,21 +23,11 @@
         android:label="@string/title_community"
         tools:layout="@layout/fragment_community" />
 
-    <fragment
-        android:id="@+id/navigation_riceplantdetector"
-        android:name="com.bangkit.subur.features.riceplantdetector.view.RicePlantDetectorFragment"
-        android:label="@string/title_riceplantdetector"
-        tools:layout="@layout/fragment_rice_plant_detector" />
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.bangkit.subur.features.profile.view.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
-
-    <fragment
-        android:id="@+id/predictionProductionFragment"
-        android:name="com.bangkit.subur.features.harvestprediction.view.HarvestPredictionFragment"
-        android:label="Prediction Production" />
 
 </navigation>
