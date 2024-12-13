@@ -33,15 +33,23 @@ class UserPreferences(private val context: Context) {
         preferences[TOKEN_KEY] != null
     }
 
-    val email: Flow<String?> = dataStore.data.map { preferences ->
-        preferences[EMAIL_KEY]
+    fun getToken(): Flow<String?> = dataStore.data.map { preferences ->
+        preferences[TOKEN_KEY]
     }
 
-    val uid: Flow<String?> = dataStore.data.map { preferences ->
+    fun getUid(): Flow<String?> = dataStore.data.map { preferences ->
         preferences[UID_KEY]
     }
 
-    val token: Flow<String?> = dataStore.data.map { preferences ->
+    val emailFlow: Flow<String?> = dataStore.data.map { preferences ->
+        preferences[EMAIL_KEY]
+    }
+
+    val uidFlow: Flow<String?> = dataStore.data.map { preferences ->
+        preferences[UID_KEY]
+    }
+
+    val tokenFlow: Flow<String?> = dataStore.data.map { preferences ->
         preferences[TOKEN_KEY]
     }
 
