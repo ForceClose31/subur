@@ -87,6 +87,7 @@ dependencies {
     implementation (libs.androidx.camera.view.v100)
 
     implementation (libs.glide)
+    implementation(libs.androidx.recyclerview)
     kapt (libs.androidx.room.compiler)
 
     implementation(libs.androidx.navigation.ui.ktx)
