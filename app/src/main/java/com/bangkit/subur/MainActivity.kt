@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
         private const val LOCATION_SETTINGS_REQUEST_CODE = 1002
+        private const val CAMERA_PERMISSION_REQUEST_CODE = 1003
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,6 +66,7 @@ class MainActivity : AppCompatActivity() {
                     setupMainActivityUI()
                     checkLocationPermission()
                     checkLocationPermission()
+                    checkCameraPermission()
                     setupMainActivityUI()
 
                     val lastPage = getLastSelectedPage()
@@ -86,6 +88,29 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            AlertDialog.Builder(this)
+                .setTitle("Camera Permission Required")
+                .setMessage("This app requires camera access to provide full functionality. Please grant camera permission.")
+                .setPositiveButton("Grant Permission") { _, _ ->
+                    ActivityCompat.requestPermissions(
+                        this,
+                        arrayOf(Manifest.permission.CAMERA),
+                        CAMERA_PERMISSION_REQUEST_CODE
+                    )
+                }
+                .setNegativeButton("Exit App") { _, _ -> finish() }
+                .setCancelable(false)
+                .show()
+        }
+    }
+
 
     private fun setupMainActivityUI() {
         binding.fab.setOnClickListener {
@@ -196,22 +221,40 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                checkLocationServices()
-            } else {
 
-                AlertDialog.Builder(this)
-                    .setTitle("Permission Denied")
-                    .setMessage("Location permission is required for this app to function. The app will now close.")
-                    .setPositiveButton("Exit") { _, _ ->
-                        finish()
-                    }
-                    .setCancelable(false)
-                    .show()
+        when (requestCode) {
+            LOCATION_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    checkLocationServices()
+                } else {
+                    AlertDialog.Builder(this)
+                        .setTitle("Permission Denied")
+                        .setMessage("Location permission is required for this app to function. The app will now close.")
+                        .setPositiveButton("Exit") { _, _ ->
+                            finish()
+                        }
+                        .setCancelable(false)
+                        .show()
+                }
+            }
+
+            CAMERA_PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    checkCameraPermission()
+                } else {
+                    AlertDialog.Builder(this)
+                        .setTitle("Permission Denied")
+                        .setMessage("Camera permission is required for this app to function properly. The app will now close.")
+                        .setPositiveButton("Exit") { _, _ ->
+                            finish()
+                        }
+                        .setCancelable(false)
+                        .show()
+                }
             }
         }
     }
+
 
     override fun onResume() {
         super.onResume()

@@ -89,6 +89,8 @@ dependencies {
 
     implementation (libs.glide)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.runner)
+    //noinspection KaptUsageInsteadOfKsp
     kapt (libs.androidx.room.compiler)
 
     implementation(libs.androidx.navigation.ui.ktx)

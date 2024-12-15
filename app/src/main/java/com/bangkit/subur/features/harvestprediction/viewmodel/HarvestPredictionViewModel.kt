@@ -22,7 +22,6 @@ class HarvestPredictionViewModel : ViewModel() {
                 val response = repository.getPrediction(request)
                 _predictionResponse.value = response
             } catch (e: Exception) {
-                // Handle error (could show a message or log the error)
             }
         }
     }

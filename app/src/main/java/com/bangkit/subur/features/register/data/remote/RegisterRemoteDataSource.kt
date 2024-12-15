@@ -1,4 +1,3 @@
-// RegisterRemoteDataSource.kt
 package com.bangkit.subur.features.register.data.remote
 
 import com.bangkit.subur.features.register.domain.model.RegisterRequest
@@ -31,7 +30,6 @@ class RegisterRemoteDataSource {
 
             val call = client.newCall(httpRequest)
 
-            // Add cancellation support
             continuation.invokeOnCancellation {
                 call.cancel()
             }

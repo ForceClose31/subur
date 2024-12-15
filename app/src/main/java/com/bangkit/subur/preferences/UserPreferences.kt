@@ -41,18 +41,6 @@ class UserPreferences(private val context: Context) {
         preferences[UID_KEY]
     }
 
-    val emailFlow: Flow<String?> = dataStore.data.map { preferences ->
-        preferences[EMAIL_KEY]
-    }
-
-    val uidFlow: Flow<String?> = dataStore.data.map { preferences ->
-        preferences[UID_KEY]
-    }
-
-    val tokenFlow: Flow<String?> = dataStore.data.map { preferences ->
-        preferences[TOKEN_KEY]
-    }
-
     suspend fun clear() {
         dataStore.edit { preferences ->
             preferences.clear()

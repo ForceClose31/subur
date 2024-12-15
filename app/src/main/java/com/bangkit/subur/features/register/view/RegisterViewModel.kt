@@ -1,4 +1,3 @@
-// RegisterViewModel.kt
 package com.bangkit.subur.features.register.view
 
 import androidx.lifecycle.LiveData

@@ -1,81 +1,93 @@
 package com.bangkit.subur.features.weather.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
 import com.bangkit.subur.R
 import com.bangkit.subur.features.weather.data.ApiConfig
 import com.bangkit.subur.features.weather.data.WeatherResponse
 import com.bangkit.subur.features.weather.domain.WeatherRepository
 import com.bangkit.subur.preferences.LocationPreferences
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import android.widget.TextView
-import android.widget.ImageView
-import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 
 class WeatherActivity : AppCompatActivity() {
+    private lateinit var viewModel: WeatherViewModel
 
-    private lateinit var locationPreferences: LocationPreferences
-    private lateinit var weatherRepository: WeatherRepository
+    private lateinit var cityNameTextView: TextView
+    private lateinit var temperatureTextView: TextView
+    private lateinit var weatherDescriptionTextView: TextView
+    private lateinit var humidityIcon: ImageView
+    private lateinit var humidityText: TextView
+    private lateinit var humidityLabel: TextView
+    private lateinit var windIcon: ImageView
+    private lateinit var windText: TextView
+    private lateinit var windLabel: TextView
+    private lateinit var weatherIcon: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_weather)
 
-        locationPreferences = LocationPreferences(this)
+        initializeViews()
 
+        val locationPreferences = LocationPreferences(this)
+        val weatherRepository = WeatherRepository(ApiConfig.weatherService)
+        val viewModelFactory = WeatherViewModel.Factory(weatherRepository, locationPreferences)
+        viewModel = ViewModelProvider(this, viewModelFactory)[WeatherViewModel::class.java]
 
-        weatherRepository = WeatherRepository(ApiConfig.weatherService)
+        observeViewModel()
 
-        lifecycleScope.launch {
-            val latitude = locationPreferences.dataStore.data.first()[LocationPreferences.LATITUDE] ?: 0.0
-            val longitude = locationPreferences.dataStore.data.first()[LocationPreferences.LONGITUDE] ?: 0.0
+        viewModel.fetchWeatherData(ApiConfig.API_KEY)
+    }
 
-            try {
-                val weatherResponse = weatherRepository.fetchCurrentWeather(latitude, longitude, ApiConfig.API_KEY)
-                updateUI(weatherResponse)
-            } catch (e: Exception) {
+    private fun initializeViews() {
+        cityNameTextView = findViewById(R.id.cityName)
+        temperatureTextView = findViewById(R.id.temperature)
+        weatherDescriptionTextView = findViewById(R.id.weatherDescription)
+        humidityIcon = findViewById(R.id.humidityIcon)
+        humidityText = findViewById(R.id.humidity)
+        humidityLabel = findViewById(R.id.humidityLabel)
+        windIcon = findViewById(R.id.windIcon)
+        windText = findViewById(R.id.wind)
+        windLabel = findViewById(R.id.windLabel)
+        weatherIcon = findViewById(R.id.weatherIcon)
+    }
 
+    private fun observeViewModel() {
+        viewModel.weatherData.observe(this) { weatherResponse ->
+            weatherResponse?.let { updateUI(it) }
+        }
+
+        viewModel.error.observe(this) { errorMessage ->
+            errorMessage?.let {
+                Snackbar.make(findViewById(android.R.id.content), it, Snackbar.LENGTH_LONG).show()
             }
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateUI(weatherResponse: WeatherResponse) {
+        cityNameTextView.text = weatherResponse.name
+        temperatureTextView.text = "${kelvinToCelsius(weatherResponse.main.temp)}°C"
+        weatherDescriptionTextView.text = weatherResponse.weather.firstOrNull()?.description ?: ""
 
-        findViewById<TextView>(R.id.cityName).text = weatherResponse.name
-        findViewById<TextView>(R.id.temperature).text = "${kelvinToCelsius(weatherResponse.main.temp)}°C"
-
-
-        findViewById<TextView>(R.id.weatherDescription).text = weatherResponse.weather.firstOrNull()?.description ?: ""
-
-
-        val humidityIcon = findViewById<ImageView>(R.id.humidityIcon)
-        val humidityText = findViewById<TextView>(R.id.humidity)
-        val humidityLabel = findViewById<TextView>(R.id.humidityLabel)
         humidityText.text = "${weatherResponse.main.humidity}%"
-
-
-        val windIcon = findViewById<ImageView>(R.id.windIcon)
-        val windText = findViewById<TextView>(R.id.wind)
-        val windLabel = findViewById<TextView>(R.id.windLabel)
         windText.text = "${weatherResponse.wind.speed} m/s"
 
-
-        humidityIcon.visibility = View.VISIBLE
-        humidityText.visibility = View.VISIBLE
-        humidityLabel.visibility = View.VISIBLE
-
-        windIcon.visibility = View.VISIBLE
-        windText.visibility = View.VISIBLE
-        windLabel.visibility = View.VISIBLE
-
+        listOf(humidityIcon, humidityText, humidityLabel,
+            windIcon, windText, windLabel).forEach {
+            it.visibility = View.VISIBLE
+        }
 
         val iconUrl = "https://openweathermap.org/img/wn/${weatherResponse.weather.firstOrNull()?.icon}@2x.png"
-        Picasso.get().load(iconUrl).into(findViewById<ImageView>(R.id.weatherIcon))
+        Picasso.get().load(iconUrl).into(weatherIcon)
     }
 
     private fun kelvinToCelsius(kelvin: Double): Int {

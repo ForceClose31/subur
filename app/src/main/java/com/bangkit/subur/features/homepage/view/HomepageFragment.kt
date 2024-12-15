@@ -44,7 +44,6 @@ class HomepageFragment : Fragment() {
         }
 
         riceDetectButton.setOnClickListener {
-            // Navigate to RiceDetectFragment when the button is clicked
             val fragmentTransaction = parentFragmentManager.beginTransaction()
             fragmentTransaction.replace(R.id.fragment_container, RicePlantDetectorFragment())
             fragmentTransaction.addToBackStack(null)

@@ -1,4 +1,3 @@
-// RegisterActivity.kt
 package com.bangkit.subur.features.register.view
 
 import android.content.Intent
@@ -33,7 +32,6 @@ class RegisterActivity : AppCompatActivity() {
 
         registerViewModel = ViewModelProvider(this)[RegisterViewModel::class.java]
 
-        // Initialize views
         nameInput = findViewById(R.id.name_input)
         nameInputLayout = findViewById(R.id.name_input_layout)
         emailInput = findViewById(R.id.email_input)
@@ -42,7 +40,6 @@ class RegisterActivity : AppCompatActivity() {
         passwordInputLayout = findViewById(R.id.password_input_layout)
         registerButton = findViewById(R.id.register_button)
 
-        // Handle login redirection
         val loginText: TextView = findViewById(R.id.login_text)
         loginText.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
@@ -98,7 +95,6 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    // Validation methods remain the same as in the original code
     private fun validateName(): Boolean {
         val name = nameInput.text.toString().trim()
         return if (name.isEmpty()) {

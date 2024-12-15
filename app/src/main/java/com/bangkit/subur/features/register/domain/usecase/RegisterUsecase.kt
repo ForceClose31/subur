@@ -1,4 +1,3 @@
-// RegisterUseCase.kt
 package com.bangkit.subur.features.register.domain.usecase
 
 import com.bangkit.subur.features.register.data.RegisterRepository

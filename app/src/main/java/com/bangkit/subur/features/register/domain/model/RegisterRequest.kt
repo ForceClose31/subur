@@ -1,4 +1,3 @@
-
 package com.bangkit.subur.features.register.domain.model
 
 data class RegisterRequest(

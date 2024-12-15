@@ -30,31 +30,34 @@
             android:layout_marginBottom="16dp">
 
             <ImageView
+                android:id="@+id/profile_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_logo_app"
+                android:contentDescription="TODO"
                 android:scaleType="centerCrop"/>
 
         </androidx.cardview.widget.CardView>
 
         <TextView
+            android:id="@+id/profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Bashori"
             android:textColor="#333333"
             android:textSize="22sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"/>
 
         <TextView
+            android:id="@+id/profile_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="bashorirahmat@gmail.com"
+            android:text="gmail"
             android:textColor="#666666"
             android:textSize="16sp"
-            android:layout_marginBottom="4dp"/>
+            android:layout_marginBottom="4dp"
+            android:visibility="gone"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,7 +66,8 @@
             android:text="Jember"
             android:textColor="#666666"
             android:textSize="16sp"
-            android:layout_marginBottom="24dp"/>
+            android:layout_marginBottom="24dp"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="match_parent"
