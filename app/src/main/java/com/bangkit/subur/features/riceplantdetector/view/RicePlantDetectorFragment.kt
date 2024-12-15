@@ -1,60 +1,105 @@
 package com.bangkit.subur.features.riceplantdetector.view
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.provider.MediaStore
 import android.view.View
-import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.ViewModelProvider
 import com.bangkit.subur.R
+import com.bangkit.subur.features.profile.data.AppDatabase
+import com.bangkit.subur.features.profile.data.DetectionHistory
+import com.bangkit.subur.features.profile.viewmodel.HistoryViewModel
+import com.bangkit.subur.features.profile.viewmodel.HistoryViewModelFactory
+import com.bangkit.subur.features.riceplantdetector.viewmodel.RicePlantDetectorViewModel
+import androidx.fragment.app.viewModels
+import com.bangkit.subur.features.profile.domain.HistoryRepository
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class RicePlantDetectorFragment : Fragment(R.layout.fragment_rice_plant_detector) {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [RicePlantDetectorFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class RicePlantDetectorFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var btnTakePhoto: Button
+    private lateinit var btnSelectFromGallery: Button
+    private lateinit var imageView: ImageView
+    private lateinit var textViewMessage: TextView
+    private lateinit var historyViewModel: HistoryViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private val ricePlantDetectorViewModel: RicePlantDetectorViewModel by viewModels()
+
+    private val takePhotoResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val imageBitmap = result.data?.extras?.get("data") as Bitmap
+            updateUI(imageBitmap)
+            ricePlantDetectorViewModel.uploadImage(imageBitmap)
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_rice_plant_detector, container, false)
+    private val selectFromGalleryResult = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, it)
+            updateUI(bitmap)
+            ricePlantDetectorViewModel.uploadImage(bitmap)
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RicePlantDetectorFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RicePlantDetectorFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    @SuppressLint("SetTextI18n")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val database = AppDatabase.getInstance(requireContext())
+        val repository = HistoryRepository(database.detectionHistoryDao())
+
+        val factory = HistoryViewModelFactory(repository)
+        historyViewModel = ViewModelProvider(this, factory)[HistoryViewModel::class.java]
+
+        btnTakePhoto = view.findViewById(R.id.btnTakePhoto)
+        btnSelectFromGallery = view.findViewById(R.id.btnSelectFromGallery)
+        imageView = view.findViewById(R.id.imageView)
+        textViewMessage = view.findViewById(R.id.textViewMessage)
+
+        btnTakePhoto.setOnClickListener {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            takePhotoResult.launch(intent)
+        }
+
+        btnSelectFromGallery.setOnClickListener {
+            selectFromGalleryResult.launch("image/*")
+        }
+
+        ricePlantDetectorViewModel.result.observe(viewLifecycleOwner) { result ->
+            textViewMessage.text = "Predicted Class: ${result.predicted_class}\nConfidence: ${result.confidence}\nHandling Instruction: ${result.handling_instructions}"
+            val historyItem = DetectionHistory(
+                imageUri = saveImageToInternalStorage(),
+                confidence = result.confidence,
+                handlingInstructions = result.handling_instructions,
+                predictedClass = result.predicted_class
+            )
+            historyViewModel.insertHistory(historyItem)
+        }
+    }
+
+    private fun saveImageToInternalStorage(): String {
+        val filename = "rice_plant_${System.currentTimeMillis()}.png"
+        val outputStream = requireContext().openFileOutput(filename, Activity.MODE_PRIVATE)
+        imageView.drawable.toBitmap().compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        outputStream.close()
+        return requireContext().filesDir.absolutePath + "/" + filename
+    }
+
+    private fun updateUI(bitmap: Bitmap) {
+        imageView.setImageBitmap(bitmap)
+
+        btnTakePhoto.visibility = View.GONE
+        btnSelectFromGallery.visibility = View.GONE
+
+        imageView.visibility = View.VISIBLE
+        textViewMessage.visibility = View.VISIBLE
     }
 }

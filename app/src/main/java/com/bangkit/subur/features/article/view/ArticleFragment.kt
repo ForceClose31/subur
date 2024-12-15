@@ -1,60 +1,127 @@
 package com.bangkit.subur.features.article.view
 
+import android.content.Intent
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bangkit.subur.R
+import com.bangkit.subur.databinding.FragmentArticleBinding
+import com.bangkit.subur.features.article.viewmodel.ArticleViewModel
+import com.bangkit.subur.features.article.model.Article
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ArticleFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ArticleFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentArticleBinding
+    private lateinit var viewModel: ArticleViewModel
+
+    private lateinit var horizontalAdapter: HorizontalArticleAdapter
+    private lateinit var verticalAdapter: ArticleAdapter
+    private lateinit var latestAdapter: ArticleAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_article, container, false)
+    ): View {
+        binding = FragmentArticleBinding.inflate(inflater, container, false)
+
+        viewModel = ViewModelProvider(this)[ArticleViewModel::class.java]
+
+        setupRecyclerViews()
+        setupObservers()
+        setupTabSwitching()
+        setupSearch()
+
+        viewModel.fetchArticles()
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ArticleFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ArticleFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun setupRecyclerViews() {
+        horizontalAdapter = HorizontalArticleAdapter { openArticle(it) }
+        verticalAdapter = ArticleAdapter { openArticle(it) }
+        latestAdapter = ArticleAdapter { openArticle(it) }
+
+        binding.rvHorizontalArticles.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = horizontalAdapter
+        }
+
+        binding.rvVerticalArticles.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = verticalAdapter
+        }
+
+        binding.rvLatestArticles.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = latestAdapter
+        }
+    }
+
+    private fun setupObservers() {
+        viewModel.articles.observe(viewLifecycleOwner) { articles ->
+            if (articles.isNotEmpty()) {
+                Log.d("ArticleFragment", "Articles loaded: $articles")
+                horizontalAdapter.submitList(articles)
+                verticalAdapter.submitList(articles)
+                latestAdapter.submitList(articles)
+            } else {
+                Log.d("ArticleFragment", "No articles available")
             }
+        }
+    }
+
+    private fun setupTabSwitching() {
+        binding.tvTerbaru.setOnClickListener {
+            switchToTab(isTerbaru = true)
+        }
+
+        binding.tvBeranda.setOnClickListener {
+            switchToTab(isTerbaru = false)
+        }
+    }
+
+    private fun switchToTab(isTerbaru: Boolean) {
+        if (isTerbaru) {
+            binding.tvTerbaru.setTextColor(Color.parseColor("#388E3C"))
+            binding.tvBeranda.setTextColor(Color.parseColor("#BDBDBD"))
+
+            binding.viewSwitcher.setInAnimation(context, R.anim.slide_in_right)
+            binding.viewSwitcher.setOutAnimation(context, R.anim.slide_out_left)
+
+            viewModel.articles.value?.let { articles ->
+                latestAdapter.submitList(articles.take(5))
+            }
+        } else {
+            binding.tvBeranda.setTextColor(Color.parseColor("#388E3C"))
+            binding.tvTerbaru.setTextColor(Color.parseColor("#BDBDBD"))
+
+            binding.viewSwitcher.setInAnimation(context, R.anim.slide_in_left)
+            binding.viewSwitcher.setOutAnimation(context, R.anim.slide_out_right)
+
+            viewModel.articles.value?.let { articles ->
+                verticalAdapter.submitList(articles)
+            }
+        }
+        binding.viewSwitcher.showNext()
+    }
+
+    private fun openArticle(article: Article) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(article.article_link))
+        startActivity(intent)
+    }
+
+    private fun setupSearch() {
+        binding.etSearchArticle.addTextChangedListener { editable ->
+            val query = editable.toString().trim()
+            viewModel.searchArticles(query)
+        }
     }
 }
